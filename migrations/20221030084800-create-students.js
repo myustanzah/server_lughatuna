@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Students', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -19,22 +19,47 @@ module.exports = {
         field: 'updated_at',
         type: Sequelize.DATE
       },
-      name: {
+      firstName: {
+        type: Sequelize.STRING,
+        field: 'first_name',
+        allowNull: true
+      },
+      lastName: {
+        type: Sequelize.STRING,
+        field: 'last_name',
+        allowNull: true
+      },
+      nis: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: true
+      },
+      nisn: {
         type: Sequelize.STRING,
         allowNull: true
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: true,
-        unique: true
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      kodeUser: {
+      gender: {
         type: Sequelize.INTEGER,
-        field: 'kode_user',
+        allowNull: true
+      },
+      birthday: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      UserId: {
+        type: Sequelize.INTEGER,
+        field: 'user_id',
+        references: {
+          model: {
+            tableName: 'Users'
+          },
+          key: 'id',
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
+      comment: {
+        type: Sequelize.STRING,
         allowNull: true
       },
       imgProfil: {
@@ -42,13 +67,14 @@ module.exports = {
         field: 'img_profil',
         allowNull: true
       },
-      descriptions: {
-        type: Sequelize.STRING,
-        allowNull: true
+      hide: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
+      
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Students');
   }
 };
