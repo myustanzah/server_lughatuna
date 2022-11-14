@@ -28,7 +28,7 @@ class AccountController extends BaseController{
                 email : req.body.email,
                 password : req.body.password
             }
-            // console.log(req.body)
+            
             let response = {}
             if(!inputPayload.email || !inputPayload.password)
                 throw UniversalErrorResponse(404, "please, input email or password")
@@ -37,10 +37,6 @@ class AccountController extends BaseController{
                 { 
                     where: { 
                         email: inputPayload.email 
-                    },
-                    include: {
-                        all: true,
-                        nested: true
                     }
                 })
             
@@ -75,6 +71,33 @@ class AccountController extends BaseController{
             
             res.status(200).json(UniversalResponse(200, "OK", responseCreateUser))
 
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
+    static async getDataUser(req, res){
+        try {
+            let { token } = req.body
+            let response = {}
+
+            const user_data = jwt.verify(token, process.env.PRIVATE_KEY)
+
+            const checkAccountUser = await User.findOne(
+                { 
+                    where: { 
+                        email: user_data.email 
+                    },
+                    include: {
+                        all: true,
+                        nested: true
+                    }
+                })
+            
+            response.data = checkAccountUser
+
+            res.status(200).json(UniversalResponse(200, "OK", response))
+            
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }

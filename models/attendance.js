@@ -3,63 +3,60 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Session extends Model {
+  class Attendance extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Session.belongsTo(models.Students, { foreignKey: 'StudentId' })
-      Session.hasMany(models.Attendance)
+      Attendance.belongsTo(models.Session, { foreignKey: 'SessionId' })
     }
   }
-  Session.init({
+  Attendance.init({
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     createdAt: {
       allowNull: false,
-      field: 'created_at',
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      field: 'created_at'
     },
     updatedAt: {
       allowNull: false,
-      field: 'created_at',
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      field: 'updated_at'
     },
-    sesi: {
-      type: DataTypes.INTEGER
-    },
-    name: {
-      type: DataTypes.STRING
-    },
-    StudentId: {
+    SessionId: {
       type: DataTypes.INTEGER,
+      field: 'session_id',
       references: {
         model: {
-          tableName: 'Students'
+          tableName: 'Sessions'
         },
-        key: 'id'
+        key: 'id',
       },
       onDelete: 'cascade',
       onUpdate: 'cascade'
     },
-    monday: {
+    present: {
       type: DataTypes.BOOLEAN
     },
-    tuesday: {
+    absent: {
       type: DataTypes.BOOLEAN
     },
-    wednesday: {
+    tardy: {
       type: DataTypes.BOOLEAN
     },
-    thursday: {
-      type: DataTypes.BOOLEAN
+    comment: {
+      type: DataTypes.STRING
     },
-    friday: {
-      type: DataTypes.BOOLEAN
-    }
   }, {
     sequelize,
-    modelName: 'Session',
+    modelName: 'Attendance',
   });
-  return Session;
+  return Attendance;
 };

@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Students.belongsToMany(models.Objective, { through: 'LessonsPlan' });
       Students.hasOne(models.Contact)
       Students.hasMany(models.Session)
+      Students.hasMany(models.Observation)
     }
   }
   Students.init({

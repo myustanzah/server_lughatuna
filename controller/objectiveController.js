@@ -28,9 +28,20 @@ class ObjectiveController {
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
+    }
 
-        
-
+    static async hideObjective(req, res){
+        try {
+            const idObjective = req.params.ObjId
+            
+            const updateObjective = await Objective.update({ hide: true }, {where: {id: +idObjective}})
+            if(!updateObjective)
+                throw UniversalErrorResponse(500, "Bad Request", "Internal Server Error")
+            res.status(200).json(UniversalResponse(200, "Ok", updateObjective))
+            
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
     }
 
 }

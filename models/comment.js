@@ -3,19 +3,23 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Areas extends Model {
+  class Comment extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Areas.belongsTo(models.User, { foreignKey: 'UserId'})
-      Areas.hasMany(models.Objective)
+      Comment.belongsTo(models.Observation, { foreignKey: 'ObservationId' })
     }
   }
-  Areas.init({
-    
+  Comment.init({
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,
@@ -26,26 +30,24 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       field: 'updated_at'
     },
-    name: DataTypes.STRING,
-    UserId: {
+    ObservationId: {
       type: DataTypes.INTEGER,
-      field: 'user_id',
-        references: {
-          model: {
-            tableName: 'Users'
-          },
-          key: 'id'
+      field: 'observation_id',
+      references: {
+        model: {
+          tableName: 'Observations'
         },
-        onDelete: 'cascade',
-        onUpdate: 'cascade'
+        key: 'id',
+      },
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
     },
-    hide: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    }
+    description: {
+      type: DataTypes.STRING
+    },
   }, {
     sequelize,
-    modelName: 'Areas',
+    modelName: 'Comment',
   });
-  return Areas;
+  return Comment;
 };

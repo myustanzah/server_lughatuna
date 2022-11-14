@@ -1,19 +1,19 @@
 const { Op } = require('sequelize')
 const Converter = require('../helper/Converter')
 const { UniversalResponse, UniversalErrorResponse } = require('../helper/universalResponse')
-const { Students, User, Session } = require('../models')
+const { Students, User, Session, Objectives, Attendance } = require('../models')
 
 class StudentController {
     static async index(req, res){
         try {
+            let user_id = req.currentUser.UserId
             const student = await Students.findAll({ 
-                    include: [
-                        { 
-                            model: Session,
-                            required: false
-                        },
-                        User
-                    ]
+                    where: {
+                        UserId: user_id
+                    },
+                    include: {
+                        all: true
+                    }
             })
             res.status(200).json(UniversalResponse(200, "OK", student))
         } catch (error) {
@@ -51,7 +51,7 @@ class StudentController {
                 const sessionCreate = await Session.create(inputSession[i])
             }
             
-            res.status(200).json(UniversalResponse(200, "OK", "sukses"))
+            res.status(200).json(UniversalResponse(200, "OK", studentCreate))
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
