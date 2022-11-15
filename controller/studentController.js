@@ -73,8 +73,8 @@ class StudentController {
                     raw: true
                 })
             
-                if(!updateProfile || Converter.convertJson(updateProfile) === {})
-                throw UniversalErrorResponse(500, "Something wrong", updateProfile)
+                if (updateProfile[0] !== 1) 
+                throw UniversalErrorResponse(500, "Internal Server Error", updateProfile)
             
                 res.status(201).json(UniversalResponse(201, "Created", {imgProfil: updateProfile[1][0].imgProfil}))
         } catch (error) {
@@ -97,8 +97,8 @@ class StudentController {
                 raw: true
             })
 
-            if(!newStudent || Converter.convertJson(newStudent) === {})
-                throw UniversalErrorResponse(500, "Something wrong", newStudent)
+            if (newStudent[0] !== 1) 
+                throw UniversalErrorResponse(500, "Internal Server Error", newStudent)
             
                 res.status(201).json(UniversalResponse(201, "Created", newStudent[1]))
         } catch (error) {
@@ -113,8 +113,8 @@ class StudentController {
                 throw UniversalErrorResponse(400, "Student Not Found", student)
             
             const hideStudent = await Students.update({ hide: !student.hide }, {where: {id: +id}, returning: true, raw: true})
-            if(!hideStudent)
-                throw UniversalErrorResponse(500, "Bad Request", "Internal Server Error")
+            if (hideStudent[0] !== 1) 
+                throw UniversalErrorResponse(500, "Internal Server Error", hideStudent)
             res.status(200).json(UniversalResponse(201, "Created", {hide: hideStudent[1][0].hide}))
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
