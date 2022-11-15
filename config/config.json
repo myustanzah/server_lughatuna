@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "elefin",
-    "password": "123456789",
+    "username": "postgres",
+    "password": "postgres",
     "database": "local_lughatuna",
     "host": "localhost",
     "dialect": "postgres"

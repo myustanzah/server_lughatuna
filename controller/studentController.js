@@ -57,6 +57,69 @@ class StudentController {
         }
 
     }
+    static async uploadProfile(req, res){
+        const { id } = req.params
+        const imgProfil = req.file.filename
+        try {
+            const student = await Students.findByPk(+id)
+            if(!student)
+                throw UniversalErrorResponse(400, "Student Not Found", student)
+            
+                const updateProfile = await Students.update({imgProfil}, {
+                    where: {
+                        id: +id
+                    },
+                    returning: true,
+                    raw: true
+                })
+            
+                if(!updateProfile || Converter.convertJson(updateProfile) === {})
+                throw UniversalErrorResponse(500, "Something wrong", updateProfile)
+            
+                res.status(201).json(UniversalResponse(201, "Created", {imgProfil: updateProfile[1][0].imgProfil}))
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+    static async editStudent(req, res){
+        const { id } = req.params
+        const { firstName, lastName, nis, nisn, gender, birthday, comment, imgProfil } = req.body
+        try {
+            const student = await Students.findByPk(+id)
+            if(!student)
+                throw UniversalErrorResponse(400, "Student Not Found", student)
+            
+            const newStudent = await Students.update({firstName, lastName, nis, nisn, gender, birthday, comment, imgProfil}, {
+                where: {
+                    id: +id
+                },
+                returning: true,
+                raw: true
+            })
+
+            if(!newStudent || Converter.convertJson(newStudent) === {})
+                throw UniversalErrorResponse(500, "Something wrong", newStudent)
+            
+                res.status(201).json(UniversalResponse(201, "Created", newStudent[1]))
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+    static async hideStudent(req, res){
+        const { id } = req.params
+        try {
+            const student = await Students.findByPk(+id)
+            if(!student)
+                throw UniversalErrorResponse(400, "Student Not Found", student)
+            
+            const hideStudent = await Students.update({ hide: !student.hide }, {where: {id: +id}, returning: true, raw: true})
+            if(!hideStudent)
+                throw UniversalErrorResponse(500, "Bad Request", "Internal Server Error")
+            res.status(200).json(UniversalResponse(201, "Created", {hide: hideStudent[1][0].hide}))
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
 }
 
 module.exports = StudentController

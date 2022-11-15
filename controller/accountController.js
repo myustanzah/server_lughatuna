@@ -31,7 +31,7 @@ class AccountController extends BaseController{
             
             let response = {}
             if(!inputPayload.email || !inputPayload.password)
-                throw UniversalErrorResponse(404, "please, input email or password")
+                throw UniversalErrorResponse(400, "please, input email or password")
             
             const checkAccountUser = await User.findOne(
                 { 
