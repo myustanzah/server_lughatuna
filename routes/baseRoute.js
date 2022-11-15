@@ -5,6 +5,7 @@ const studentRoute = require('./studentRoute');
 const contactRoute = require('./contactRoute');
 const objectiveRoute = require('./objectiveRoute');
 const lessonRoute = require('./lessonPlanRoute');
+const sessionRoute = require('./sessionRoute');
 const observationRoute = require('./observationRoute');
 const { authLogin } = require('../helper/middleware/authentication');
 
@@ -26,6 +27,9 @@ route.use(objectiveRoute)
 
 // lesson plan
 route.use(lessonRoute)
+
+// session
+route.use(sessionRoute)
 
 // observation
 route.use(observationRoute)

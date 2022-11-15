@@ -13,7 +13,6 @@ class ContactController {
             cityWork, stateWork, postalCodeWork
         } = req.body
         try {
-            console.log(studentId);
             const findStudent = await Students.findByPk(+studentId)
             if(!findStudent)
             throw UniversalErrorResponse(404, "Student Not Found", findStudent)
@@ -29,7 +28,7 @@ class ContactController {
             
             res.status(200).json(UniversalResponse(200, "OK", newContact));
         } catch (error) {
-            res.status(500).json(error);
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content));
         }
     }
 }
