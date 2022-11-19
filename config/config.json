@@ -1,10 +1,11 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "postgres",
+    "username": "elefin",
+    "password": "123456789",
     "database": "local_lughatuna",
     "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   },
   "test": {
     "username": "root",

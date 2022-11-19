@@ -45,6 +45,10 @@ module.exports = {
       descriptions: {
         type: Sequelize.STRING,
         allowNull: true
+      },
+      suspend: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       }
     });
   },

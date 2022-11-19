@@ -8,14 +8,7 @@ const { decryptPass } = require("../helper/crypto");
 class AccountController extends BaseController{
     static async index(req, res){
         try {
-            const users = await User.findAll({
-                include: [
-                    {
-                        model: Students,
-                        required: false
-                    }
-                ]
-            })
+            const users = await User.findAll()
             res.status(200).json(UniversalResponse(200, "OK", users))
 
         } catch (error) {
@@ -40,12 +33,13 @@ class AccountController extends BaseController{
                     }
                 })
             
-            if(!checkAccountUser)
+            if(!checkAccountUser || checkAccountUser.suspend === true)
                 throw UniversalErrorResponse(400, "Invalid email or password")
             
             if(!decryptPass(inputPayload.password, checkAccountUser.password))
                 throw UniversalErrorResponse(400, "Invalid email or password")
-            
+
+
             response.token = jwt.sign({id: checkAccountUser.id, email: checkAccountUser.email}, process.env.PRIVATE_KEY)
             response.data = checkAccountUser
 
@@ -76,32 +70,32 @@ class AccountController extends BaseController{
         }
     }
 
-    static async getDataUser(req, res){
-        try {
-            let { token } = req.body
-            let response = {}
+    // static async getDataUser(req, res){
+    //     try {
+    //         let { token } = req.body
+    //         let response = {}
 
-            const user_data = jwt.verify(token, process.env.PRIVATE_KEY)
+    //         const user_data = jwt.verify(token, process.env.PRIVATE_KEY)
 
-            const checkAccountUser = await User.findOne(
-                { 
-                    where: { 
-                        email: user_data.email 
-                    },
-                    include: {
-                        all: true,
-                        nested: true
-                    }
-                })
+    //         const checkAccountUser = await User.findOne(
+    //             { 
+    //                 where: { 
+    //                     email: user_data.email 
+    //                 },
+    //                 include: {
+    //                     all: true,
+    //                     nested: true
+    //                 }
+    //             })
             
-            response.data = checkAccountUser
+    //         response.data = checkAccountUser
 
-            res.status(200).json(UniversalResponse(200, "OK", response))
+    //         res.status(200).json(UniversalResponse(200, "OK", response))
             
-        } catch (error) {
-            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
-        }
-    }
+    //     } catch (error) {
+    //         res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+    //     }
+    // }
 }
 
 module.exports = AccountController
