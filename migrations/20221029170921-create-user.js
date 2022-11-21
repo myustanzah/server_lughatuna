@@ -49,7 +49,20 @@ module.exports = {
       suspend: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
-      }
+      },
+      address: {
+        type: Sequelize.STRING,
+        defaultValue: false
+      },
+      city: {
+        type: Sequelize.STRING,
+        defaultValue: false
+      },
+      postalCode: {
+        type: Sequelize.STRING,
+        defaultValue: false,
+        field: 'postal_code',
+      },
     });
   },
   async down(queryInterface, Sequelize) {

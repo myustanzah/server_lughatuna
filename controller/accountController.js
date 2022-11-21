@@ -56,7 +56,7 @@ class AccountController extends BaseController{
                 name: name,
                 email: email,
                 password: password,
-                kodeUser: kode_user,
+                kodeUser: +kode_user,
                 imgProfil: img_profil,
                 descriptions: descriptions
             }
@@ -70,32 +70,6 @@ class AccountController extends BaseController{
         }
     }
 
-    // static async getDataUser(req, res){
-    //     try {
-    //         let { token } = req.body
-    //         let response = {}
-
-    //         const user_data = jwt.verify(token, process.env.PRIVATE_KEY)
-
-    //         const checkAccountUser = await User.findOne(
-    //             { 
-    //                 where: { 
-    //                     email: user_data.email 
-    //                 },
-    //                 include: {
-    //                     all: true,
-    //                     nested: true
-    //                 }
-    //             })
-            
-    //         response.data = checkAccountUser
-
-    //         res.status(200).json(UniversalResponse(200, "OK", response))
-            
-    //     } catch (error) {
-    //         res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
-    //     }
-    // }
 }
 
 module.exports = AccountController
