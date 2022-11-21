@@ -62,16 +62,29 @@ module.exports = (sequelize, DataTypes) => {
     imgProfil: {
       type: DataTypes.STRING,
       field: 'img_profil',
-      allowNull: false
+      allowNull: true
     },
     descriptions: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     suspend: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    }
+    },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: 'postal_code',
+    },
     
   }, {
     sequelize,
