@@ -7,6 +7,7 @@ userRoute.post('/user/login', AccountController.login)
 userRoute.post('/user/register', AccountController.register)
 userRoute.post('/user/edit/:id', AccountController.editUser)
 userRoute.post('/user/delete/:id', AccountController.deleteUser)
+userRoute.post('/user/reset-password', AccountController.resetPassword)
 // userRoute.post('/user/get-data-user', AccountController.getDataUser)
 
 module.exports = userRoute
