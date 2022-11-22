@@ -3,12 +3,15 @@ const jwt = require('jsonwebtoken')
 const { User, Students, Areas } = require('../models/index');
 const { UniversalResponse, UniversalErrorResponse } = require("../helper/universalResponse");
 const { decryptPass } = require("../helper/crypto");
+const Converter = require("../helper/Converter");
 
 
 class AccountController extends BaseController{
     static async index(req, res){
         try {
-            const users = await User.findAll()
+            const users = await User.findAll({
+                order: ['id', 'DESC']
+            })
             res.status(200).json(UniversalResponse(200, "OK", users))
 
         } catch (error) {
@@ -65,6 +68,55 @@ class AccountController extends BaseController{
             
             res.status(200).json(UniversalResponse(200, "OK", responseCreateUser))
 
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
+    static async editUser(req, res){
+        try {
+
+            const { name, email, descriptions, address, city, postalCode } = req.body
+            
+            let findUser = await User.findByPk(+req.params.id)
+
+            if (!findUser) 
+                throw UniversalErrorResponse(401, "User Not Found", findUser)
+
+            findUser.name = name
+            findUser.email = email
+            findUser.descriptions = descriptions
+            findUser.address = address
+            findUser.city = city
+            findUser.postalCode = postalCode
+
+            const userConvert = Converter.convertJson(findUser)
+            const userAfterUpdate = await findUser.update(userConvert)
+
+            if(!userAfterUpdate)
+                throw UniversalErrorResponse(500, "Internal Server Error", userAfterUpdate)
+
+            res.status(201).json(UniversalResponse(201, "OK", userAfterUpdate))
+            
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
+    static async deleteUser(req, res){
+        try {
+            let findUser = await User.findByPk(+req.params.id)
+
+            if (!findUser) 
+                throw UniversalErrorResponse(401, "User Not Found", findUser)
+
+            findUser.suspend = true
+
+            const userConvert = Converter.convertJson(findUser)
+            const userAfterUpdate = await findUser.update(userConvert)
+
+            res.status(201).json(UniversalResponse(201, "OK", userAfterUpdate))
+            
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
