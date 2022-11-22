@@ -2,7 +2,7 @@ const BaseController = require("./baseController");
 const jwt = require('jsonwebtoken')
 const { User, Students, Areas } = require('../models/index');
 const { UniversalResponse, UniversalErrorResponse } = require("../helper/universalResponse");
-const { decryptPass } = require("../helper/crypto");
+const { decryptPass, encryptPass } = require("../helper/crypto");
 const Converter = require("../helper/Converter");
 
 
@@ -10,7 +10,7 @@ class AccountController extends BaseController{
     static async index(req, res){
         try {
             const users = await User.findAll({
-                order: ['id', 'DESC']
+                order: [['id', 'DESC']]
             })
             res.status(200).json(UniversalResponse(200, "OK", users))
 
@@ -64,6 +64,10 @@ class AccountController extends BaseController{
                 descriptions: descriptions
             }
             
+            const findUser = await User.findOne({where: {email: email}})
+            if (findUser) 
+                throw UniversalErrorResponse(500, "User already exist", findUser)
+
             let responseCreateUser = await User.create(inputUser)
             
             res.status(200).json(UniversalResponse(200, "OK", responseCreateUser))
@@ -117,6 +121,29 @@ class AccountController extends BaseController{
 
             res.status(201).json(UniversalResponse(201, "OK", userAfterUpdate))
             
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
+    static async resetPassword(req, res){
+        try {
+            const { email, newPassword, confirmPassword } = req.body
+
+            if (newPassword !== confirmPassword) 
+                throw UniversalErrorResponse(500, "Internal Server Error", "Your password invalid")
+
+            let findUser = await User.findOne({where: {email: email}})
+            if(!findUser)
+                throw UniversalErrorResponse(401, "User Not Found", findUser)
+            
+            findUser.password = encryptPass(newPassword, 8)
+
+            const userConvert = Converter.convertJson(findUser)
+            const userAfterUpdate = await findUser.update(userConvert)
+
+            res.status(201).json(UniversalResponse(201, "OK", userAfterUpdate))
+
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
