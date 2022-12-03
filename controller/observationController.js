@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
-const { Observation, User, Students } = require('../models/index')
+const { Observation, User, Students, Comment } = require('../models/index')
 const { UniversalErrorResponse, UniversalResponse } = require("../helper/universalResponse");
+const Converter = require("../helper/Converter");
 
 
 class ObservationController {
@@ -24,7 +25,10 @@ class ObservationController {
                 {
                     [Op.and]: [{ UserId: findUser.id }, {StudentId:  findStudent.id}]   
                 },
-                include: User
+                include: [
+                    User,
+                    Comment
+                ]
             })
             
             res.status(200).json(UniversalResponse(200, "OK", findObservation))
@@ -70,15 +74,50 @@ class ObservationController {
         }
     }
 
-    static async getFileObservation(req, res){
+    static async editObservation(req, res){
         try {
+           const { id } = req.params
+           const { description } = req.body
 
-            
+           let findObservation = await Observation.findByPk(+id)
+
+           if(!findObservation)
+                throw UniversalErrorResponse(400, "internal server error", "Observation Not Found")
+
+            findObservation.description = description
+
+            const obsConvert = Converter.convertJson(findObservation)
+            const obsAfterUpdate = await findObservation.update(obsConvert)
+
+            res.status(201).json(UniversalResponse(201, "OK", obsAfterUpdate))
             
         } catch (error) {
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
     }
+
+    static async deleteObservetion(req, res){
+        try {
+            const { id } = req.params
+
+            let findObservation = await Observation.findByPk(+id)
+
+            if(!findObservation)
+                throw UniversalErrorResponse(400, "internal server error", "Observation Not Found")
+            
+            const obsConvert = Converter.convertJson(findObservation)
+            const obsAfterDelete = await findObservation.destroy(obsConvert)
+
+            if(obsAfterDelete.length !== 0)
+                throw UniversalErrorResponse(500, "internal server error", "")
+
+            res.status(200).json(UniversalResponse(200, "OK", obsAfterDelete))
+            
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
 }
 
 module.exports = ObservationController

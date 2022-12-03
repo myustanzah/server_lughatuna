@@ -1,13 +1,42 @@
 const { Op } = require('sequelize')
 const { UniversalErrorResponse, UniversalResponse } = require('../helper/universalResponse')
-const { LessonsPlan, Objective, Students } = require('../models/index')
+const { LessonsPlan, Objective, Students, Areas } = require('../models/index')
 
 class LessonPlanController {
     static async index(req, res) {
         try {
+            let { filter } = req.body
+            let modelsJoin;
+            let modelFind;
+            let modelJoinObjective;
+            
+            if (filter === "STUDENT") {
+                modelsJoin = Objective
+                modelFind = Students
+                modelJoinObjective = Areas
+            } else if (filter === "OBJECTIVE") {
+                modelsJoin = Students
+                modelFind = Objective
+            }
+
+
+            const index = await modelFind.findAll({
+                include: {
+                    model: modelsJoin,
+                    required: true,
+                    include: {
+                        model: modelJoinObjective
+                    },
+                    through: {
+                      attributes: []
+                    }
+                  }
+            })
+
+            res.status(200).json(UniversalResponse(200, "OK", index))
             
         } catch (error) {
-            
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
         
     }

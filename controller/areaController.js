@@ -18,7 +18,8 @@ class AreaController {
                                 model: Students
                             }
                         }
-                    ]
+                    ],
+                    order: [['id', 'DESC']]
             })
             res.status(200).json(UniversalResponse(200, "OK", area))
         } catch (error) {
