@@ -8,6 +8,7 @@ const lessonRoute = require('./lessonPlanRoute');
 const sessionRoute = require('./sessionRoute');
 const observationRoute = require('./observationRoute');
 const { authLogin } = require('../helper/middleware/authentication');
+const commentRoute = require('./commentRoute');
 
 // user
 route.use(userRoute)
@@ -33,5 +34,8 @@ route.use(sessionRoute)
 
 // observation
 route.use(observationRoute)
+
+// comment
+route.use(commentRoute)
 
 module.exports = route

@@ -13,7 +13,8 @@ class StudentController {
                     },
                     include: {
                         all: true
-                    }
+                    },
+                    order: [['id', 'DESC']]
             })
             res.status(200).json(UniversalResponse(200, "OK", student))
         } catch (error) {
