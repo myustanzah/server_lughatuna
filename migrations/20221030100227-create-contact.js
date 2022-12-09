@@ -85,7 +85,12 @@ module.exports = {
       postalCodeWork: {
         type: Sequelize.STRING,
         field: 'postal_code_work'
-      }
+      },
+      imgProfil: {
+        type: Sequelize.STRING,
+        field: 'img_profil',
+        allowNull: true
+      },
     });
   },
   async down(queryInterface, Sequelize) {
