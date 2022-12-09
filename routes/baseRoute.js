@@ -9,6 +9,8 @@ const sessionRoute = require('./sessionRoute');
 const observationRoute = require('./observationRoute');
 const { authLogin } = require('../helper/middleware/authentication');
 const commentRoute = require('./commentRoute');
+const medicalRoute = require('./medicalRoute');
+const alergiRoute = require('./alergiRoute');
 
 // user
 route.use(userRoute)
@@ -37,5 +39,11 @@ route.use(observationRoute)
 
 // comment
 route.use(commentRoute)
+
+// medical
+route.use(medicalRoute)
+
+// alergi
+route.use(alergiRoute)
 
 module.exports = route

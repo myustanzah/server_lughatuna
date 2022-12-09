@@ -91,6 +91,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       field: 'postal_code_work'
     },
+    imgProfil: {
+      type: DataTypes.STRING,
+      field: 'img_profil',
+      allowNull: true
+    },
   }, {
     sequelize,
     modelName: 'Contact',
