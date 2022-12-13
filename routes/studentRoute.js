@@ -7,5 +7,7 @@ studentRoute.post('/student/add-student', StudentController.addStudent)
 studentRoute.post('/student/profile/:id', upload.single('file_upload'), StudentController.uploadProfile)
 studentRoute.put('/student/:id', StudentController.editStudent)
 studentRoute.patch('/student/:id', StudentController.hideStudent)
+studentRoute.put('/student/session/:id', StudentController.editSessionStudent)
+studentRoute.delete('/student/delete/:id', StudentController.deleteStudent)
 
 module.exports = studentRoute

@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       Students.hasOne(models.Contact)
       Students.hasMany(models.Session)
       Students.hasMany(models.Observation)
+      Students.hasOne(models.Medical)
+      Students.hasOne(models.Allergy)
     }
   }
   Students.init({

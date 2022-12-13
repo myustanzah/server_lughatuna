@@ -1,7 +1,8 @@
 const { Op } = require('sequelize')
 const Converter = require('../helper/Converter')
 const { UniversalResponse, UniversalErrorResponse } = require('../helper/universalResponse')
-const { Students, User, Session, Objectives, Attendance } = require('../models')
+const { unlinkAsync } = require('../helper/utils/deleteImage')
+const { Students, User, Session, Objectives, Attendance, sequelize } = require('../models')
 
 class StudentController {
     static async index(req, res){
@@ -118,6 +119,71 @@ class StudentController {
                 throw UniversalErrorResponse(500, "Internal Server Error", hideStudent)
             res.status(200).json(UniversalResponse(201, "Created", {hide: hideStudent[1][0].hide}))
         } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
+    static async editSessionStudent(req, res){
+        const { id } = req.params
+        const { data } = req.body
+        try {
+
+            const student = await Students.findByPk(+id)
+            if(!student)
+                throw UniversalErrorResponse(400, "Student Not Found", student)
+
+
+            for (let i = 0; i < data.length; i++) {
+                const sessions = await Session.findByPk(+data[i].id)
+
+                sessions.monday = data[i].monday
+                sessions.tuesday = data[i].tuesday
+                sessions.wednesday = data[i].wednesday
+                sessions.thursday = data[i].thursday
+                sessions.friday = data[i].friday
+                sessions.updatedAt = new Date()
+                await sessions.update(Converter.convertJson(sessions))
+            }
+
+            res.status(201).json(UniversalResponse(201, "Update success", "Ok"))
+            
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
+    static async deleteStudent(req, res){
+        const { id } = req.params
+
+        const t = await sequelize.transaction();
+        try {
+            const student = await Students.findByPk(+id)
+            if(!student){
+                throw UniversalErrorResponse(400, "Student Not Found", student)
+            } else {
+                let file_path = `./images/student/${student.imgProfil}`
+                unlinkAsync(file_path)
+            }
+            
+            const deleteStudent = await Students.destroy({ 
+                where: {
+                    id: student.id
+                },
+                transaction: t 
+            })
+
+            if (deleteStudent !== 1) {
+                throw UniversalErrorResponse(500, "Internal Server Error", deleteStudent)
+            }
+
+
+            res.status(200).json(UniversalResponse(200, "Success deleting"))
+            await t.commit()
+
+        } catch (error) {
+            if(error){
+               await t.rollback()
+            }
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
     }
