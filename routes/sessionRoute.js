@@ -1,6 +1,7 @@
-const areaRoute = require('express').Router();
+const sessionRoute = require('express').Router();
 const SessionController = require('../controller/sessionController');
 
-areaRoute.put('/session/edit/:studentId', SessionController.editSession)
+sessionRoute.put('/session/edit/:studentId', SessionController.editSession)
+sessionRoute.post('/session/attendance', SessionController.storeAttendant)
 
-module.exports = areaRoute
+module.exports = sessionRoute

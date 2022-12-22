@@ -2,7 +2,18 @@ const { Op } = require('sequelize')
 const Converter = require('../helper/Converter')
 const { UniversalResponse, UniversalErrorResponse } = require('../helper/universalResponse')
 const { unlinkAsync } = require('../helper/utils/deleteImage')
-const { Students, User, Session, Objectives, Attendance, sequelize } = require('../models')
+const { 
+    Students, 
+    User, 
+    Session, 
+    Objective, 
+    Observation, 
+    Contact, 
+    Attendance, 
+    Medical, 
+    Allergy,
+    Comment, 
+    sequelize } = require('../models')
 
 class StudentController {
     static async index(req, res){
@@ -12,9 +23,23 @@ class StudentController {
                     where: {
                         UserId: user_id
                     },
-                    include: {
-                        all: true
-                    },
+                    include: [
+                        User,
+                        {
+                            model: Objective,
+                        },
+                        {
+                            model: Session,
+                            include: Attendance
+                        },
+                        {
+                            model: Observation,
+                            include: Comment
+                        },
+                        Contact,
+                        Medical,
+                        Allergy
+                    ],
                     order: [['id', 'DESC']]
             })
             res.status(200).json(UniversalResponse(200, "OK", student))
@@ -161,8 +186,10 @@ class StudentController {
             if(!student){
                 throw UniversalErrorResponse(400, "Student Not Found", student)
             } else {
-                let file_path = `./images/student/${student.imgProfil}`
-                unlinkAsync(file_path)
+                if (student.imgProfil) {
+                    let file_path = `./images/student/${student.imgProfil}`
+                    unlinkAsync(file_path)
+                }
             }
             
             const deleteStudent = await Students.destroy({ 
