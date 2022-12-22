@@ -4,8 +4,10 @@ const { LessonsPlan, Objective, Students, Areas } = require('../models/index')
 
 class LessonPlanController {
     static async index(req, res) {
+
         try {
             let { filter } = req.body
+            let user = req.currentUser
             let modelsJoin;
             let modelFind;
             let modelJoinObjective;
@@ -21,6 +23,9 @@ class LessonPlanController {
 
 
             const index = await modelFind.findAll({
+                where: {
+                    UserId: user.UserId
+                },
                 include: {
                     model: modelsJoin,
                     required: true,
