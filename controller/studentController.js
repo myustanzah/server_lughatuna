@@ -27,6 +27,7 @@ class StudentController {
                         User,
                         {
                             model: Objective,
+                            include: Students
                         },
                         {
                             model: Session,
