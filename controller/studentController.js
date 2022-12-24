@@ -31,7 +31,9 @@ class StudentController {
                         },
                         {
                             model: Session,
-                            include: Attendance
+                            separate: true,
+                            order: [ ['sesi', 'ASC'] ],
+                            include: Attendance,
                         },
                         {
                             model: Observation,
