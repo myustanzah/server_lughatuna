@@ -45,6 +45,16 @@ module.exports = {
         onDelete: 'cascade',
         onUpdate: 'cascade'
       },
+      command: {
+        allowNull: true,
+        type: Sequelize.STRING,
+        field: "command"
+      },
+      progress: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        field: "progress"
+      }
     });
   },
   async down(queryInterface, Sequelize) {

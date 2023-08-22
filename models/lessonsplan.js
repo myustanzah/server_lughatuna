@@ -50,6 +50,16 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'cascade',
       onUpdate: 'cascade'
     },
+    command: {
+      allowNull: true,
+      type: DataTypes.STRING,
+      field: "command"
+    },
+    progress: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      field: "progress"
+    }
   }, {
     sequelize,
     modelName: 'LessonsPlan',
