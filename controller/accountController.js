@@ -149,6 +149,31 @@ class AccountController extends BaseController{
         }
     }
 
+    static async editFoto(req, res){
+        const { id } = req.params
+        const imgProfil = req.file.filename
+        try {
+            const user = await User.findByPk(+id)
+            if(!user)
+                throw UniversalErrorResponse(400, "User Not Found", user)
+            
+            const updateProfile = await User.update({imgProfil}, {
+                where: {
+                    id: +id
+                },
+                returning: true,
+                raw: true
+            })
+            
+            if (updateProfile[0] !== 1) 
+                throw UniversalErrorResponse(500, "Internal Server Error", updateProfile)
+            
+            res.status(201).json(UniversalResponse(201, "Created", {imgProfil: updateProfile[1][0]}))
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
 }
 
 module.exports = AccountController

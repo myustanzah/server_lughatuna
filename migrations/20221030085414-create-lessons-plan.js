@@ -46,12 +46,10 @@ module.exports = {
         onUpdate: 'cascade'
       },
       command: {
-        allowNull: true,
         type: Sequelize.STRING,
         field: "command"
       },
       progress: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         field: "progress"
       }

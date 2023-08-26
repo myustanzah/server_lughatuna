@@ -51,12 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: 'cascade'
     },
     command: {
-      allowNull: true,
       type: DataTypes.STRING,
       field: "command"
     },
     progress: {
-      allowNull: false,
       type: DataTypes.INTEGER,
       field: "progress"
     }

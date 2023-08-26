@@ -1,7 +1,7 @@
 const multer = require('multer')
 const fs = require('fs');
 
-const checkDirectory = './images/student';
+const checkDirectory = './images/user';
 
 fs.stat(checkDirectory, (error, stats) => {
   if (error) {
@@ -21,7 +21,7 @@ fs.stat(checkDirectory, (error, stats) => {
     }
   } else {
     if (stats.isDirectory()) {
-      console.log('Direktori student sudah ada.');
+      console.log('Direktori user sudah ada.');
     } else {
       console.log('Path ini bukan sebuah direktori.');
     }
@@ -32,7 +32,7 @@ fs.stat(checkDirectory, (error, stats) => {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'images/student')
+      cb(null, 'images/user')
     },
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)

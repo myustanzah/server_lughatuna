@@ -51,7 +51,6 @@ class SessionController {
             const today_start = new Date().setHours(0, 0, 0, 0);
             const now = new Date(); 
 
-            console.log(today_start, now)
 
             for (let i = 0; i < data.length; i++) {
                 let input = {
@@ -76,7 +75,6 @@ class SessionController {
                 })
 
                 if (!findAttendance) {
-                    console.log("create attendance")
 
                     const createAttendant = await Attendance.create(input, { transaction: t })
     
