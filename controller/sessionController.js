@@ -47,14 +47,13 @@ class SessionController {
         const { data } = req.body
         const t = await sequelize.transaction()
         try {
-
+            
             const today_start = new Date().setHours(0, 0, 0, 0);
-            const now = new Date(); 
-
-
+            const now = new Date();
+            
             for (let i = 0; i < data.length; i++) {
                 let input = {
-                    SessionId: +data[i].idSession,
+                    SessionId: +data[i].id,
                     present: data[i].present,
                     absent: data[i].absent,
                     tardy: data[i].tardy,
@@ -102,7 +101,7 @@ class SessionController {
             res.status(201).json(UniversalResponse(200, "Created", {}));
             
         } catch (error) {
-            t.rollback()
+            await t.rollback()
             res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
         }
     }
