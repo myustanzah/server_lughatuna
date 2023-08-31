@@ -83,6 +83,46 @@ class LessonPlanController {
         }
     }
 
+    static async quickEntry(req, res){
+        try {
+
+            const { objectiveId, studentId, progress, comment } = req.body
+            let inputLessonPlan = {}
+            const findStudent = await Students.findOne( { where : { id: studentId } } )
+            const findObjective = await Objective.findOne( { where : {id : objectiveId } } )
+            const lessonCheck = await LessonsPlan.findOne({
+                where: {
+                    [Op.and] : [{ObjectiveId: objectiveId}, {StudentId: studentId}]
+                }
+            })
+
+            if(!findStudent)
+                throw UniversalErrorResponse(400, "Student Not Found", findStudent)
+            
+            if(!findObjective)
+                throw UniversalErrorResponse(400, "Objective Not Found", findObjective)
+            
+            if(lessonCheck)
+                throw UniversalErrorResponse(401, "Lesson Already Exist", lessonCheck)
+            
+            inputLessonPlan.ObjectiveId = objectiveId
+            inputLessonPlan.StudentId = studentId
+            inputLessonPlan.command = comment
+            inputLessonPlan.progress = progress
+            
+            console.log("ini body",inputLessonPlan)
+            const inputLesson = await LessonsPlan.create(inputLessonPlan)
+            
+            if(!inputLesson)
+                throw UniversalErrorResponse(500, "Internal Server Error", inputLesson)
+
+            res.status(200).json(UniversalResponse(200, "OK", inputLessonPlan))
+
+        } catch (error) {
+            res.status(error.status).json(UniversalErrorResponse(error.status, error.messages, error.content))
+        }
+    }
+
     static async getByStudent(req, res){
         try {
             

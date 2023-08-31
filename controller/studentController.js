@@ -19,6 +19,22 @@ class StudentController {
     static async index(req, res){
         try {
             let user_id = req.currentUser.UserId
+            let order = ['id', 'DESC']
+            switch (req.body.order) {
+                case "firstName":
+                    order = ['first_name', 'ASC']
+                    break;
+                    case "lastName":
+                        order = ['last_name', 'ASC']
+                    break;
+                case "youngestFirst":
+                    order = ['birthday', 'ASC']
+                    break;
+                case "oldestFirst":
+                    order = ['birthday', 'DESC']
+                    break;
+                }
+                
             const student = await Students.findAll({ 
                     where: {
                         UserId: user_id
@@ -43,7 +59,7 @@ class StudentController {
                         Medical,
                         Allergy
                     ],
-                    order: [['id', 'DESC']]
+                    order: [order]
             })
             res.status(200).json(UniversalResponse(200, "OK", student))
         } catch (error) {
